@@ -1,5 +1,5 @@
 
-word = input('ENtrez le mot à trouver: ')
+word = input('Entrez le mot à trouver: ')
 word = word.replace('é', 'e')
 affichage = ""
 for i in word:
@@ -9,7 +9,14 @@ for i in word:
 
 good_letter = ""
 wrong_letter = 0
+tentative = 0
 while True:
+    if '_' not in affichage:
+        print('Mot trouvé')
+        break
+    if tentative == 7:
+        print("C'est lose !")
+        break
     print('Mot à deviner : \n'
           '' + affichage)
 
@@ -20,14 +27,14 @@ while True:
 
     elif not test_lettre in word:
         print('Pas de cette lettre')
+        tentative += 1
 
-    if good_letter in word:
-        print('Mot trouvé')
     affichage = ''
     for i in word:
         if i in good_letter:
             affichage += i + " "
         else:
             affichage += '_ '
+
 
 
