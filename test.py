@@ -3,7 +3,7 @@ import random
 choix = ["casserole", "cuillere", "patate", "souris"]
 solution = random.choice(choix)
 
-solution = "casserole"
+solution = input('Quel mot ? : ')
 tentatives = 7
 affichage = ""
 lettres_trouvees = ""
@@ -17,8 +17,10 @@ while tentatives > 0:
     print("\nMot à deviner : ", affichage)
     proposition = input("proposez une lettre : ")[0:1].lower()
 
+
     if proposition in solution:
         lettres_trouvees = lettres_trouvees + proposition
+        print(lettres_trouvees)
         print("-> Bien vu!")
     else:
         tentatives = tentatives - 1
