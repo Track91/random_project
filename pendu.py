@@ -1,11 +1,15 @@
 
 word = input('Entrez le mot à trouver: ')
 word = word.replace('é', 'e')
-affichage = ""
+word = word.replace("à", 'a')
+word = word.replace("è", 'e')
+word = word.replace("ê", 'e')
+word = word.replace("ë", 'e')
+
+
+affichage  = ""
 for i in word:
     affichage = affichage + '_ '
-
-
 
 good_letter = ""
 wrong_letter = 0
