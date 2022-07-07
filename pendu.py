@@ -1,5 +1,7 @@
 
 word = input('Entrez le mot à trouver: ')
+
+
 word = word.replace('é', 'e')
 word = word.replace("à", 'a')
 word = word.replace("è", 'e')
@@ -23,9 +25,12 @@ while True:
         break
     print('Mot à deviner : \n'
           '' + affichage)
-
-    test_lettre = input('Entrez une lettre: ')[0:1].lower()
-
+    while True:
+        test_lettre = input('Entrez une lettre: ')
+        if len(test_lettre) > 1:
+            print("Entrez qu'une seule lettre")
+        else:
+            break
     if test_lettre in word:
         good_letter = good_letter + test_lettre
 

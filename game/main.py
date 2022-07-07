@@ -1,21 +1,18 @@
 import pygame
-from game import Game
-
 import random
 
 
-class Game:
+screen_x = 1080
+screen_y = 720
+
+
+class Game1(pygame.sprite.Sprite):
+
     def __init__(self):
+        super().__init__()
         self.player = Player()
         self.comet = Comet()
-
-    def update(self, screen):
-        screen.blit(self.player.image, self.player.rect)
-        self.comet_event.update_bar(screen)
-
-        self.comet_event.all_comets.draw(screen)
-        for comet in self.comet_event.all_comets:
-            comet.fall()
+        self.sunny = Sunny()
 
 
 class Player(pygame.sprite.Sprite):
@@ -25,21 +22,49 @@ class Player(pygame.sprite.Sprite):
         self.health = 10
         self.max_heath = 10
         self.velocity = 4
-        self.image = pygame.image.load('maxime2.png')
+        self.image = pygame.image.load('assets/maxime2.png')
         self.rect = self.image.get_rect()
         self.rect.x = 340
-        self.rect.y = 720-280
+        self.rect.y = screen_y- 280
 
         self.image = pygame.transform.scale(self.image, (190, 280))
 
     def move_right(self):
         self.rect.x += self.velocity
+
     def move_left(self):
         self.rect.x -= self.velocity
+
     def move_down(self):
         self.rect.y += self.velocity
+
     def move_up(self):
         self.rect.y -= self.velocity
+
+
+class Sunny(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("assets/sunny.png")
+        self.image = pygame.transform.scale(self.image, (120, 150))
+        self.rect = self.image.get_rect()
+        self.velocity = 4
+
+    def lose(self):
+        print('')
+
+    def fall(self):
+        self.rect.y += self.velocity
+
+        if self.rect.y == screen_y:
+            self.remove()
+            self.lose()
+
+    def reset_fall(self):
+        self.rect.y = 0
+        self.rect.x = random.randint(0, screen_x - 200)
+        self.velocity = 4
 
 
 
@@ -47,27 +72,26 @@ class Comet(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("bite.png")
+        self.image = pygame.image.load("assets/bite.png")
         self.image = pygame.transform.scale(self.image, (200, 200))
         self.rect = self.image.get_rect()
-        self.velocity = 1
+        self.rect.x = 500
+        self.velocity = 4
 
     def lose(self):
         print('')
+
     def fall(self):
         self.rect.y += self.velocity
 
-        if self.rect.y == 720:
+        if self.rect.y == screen_y:
             self.remove()
             self.lose()
 
-
-
-
     def reset_fall(self):
         self.rect.y = 0
-        self.rect.x = random.randint(0, 1080-200)
-        self.velocity = random.randint(3, 5)
+        self.rect.x = random.randint(0, screen_x - 200)
+        self.velocity = random.randint(2, 3)
 
 
 pygame.init()
@@ -84,9 +108,11 @@ colors = {
 }
 
 pygame.display.set_caption('Maxime game')
-screen = pygame.display.set_mode((1080, 720))
+screen = pygame.display.set_mode((screen_x, screen_y))
 score = 0
-def check_collide():
+
+
+def check_bite_collide():
     global score
     rect1 = game.comet.rect
     rect2 = game.player.rect
@@ -97,48 +123,60 @@ def check_collide():
         score += 1
 
 
-game = Game()
+def check_sunny_collide():
+    rect1 = game.sunny.rect
+    rect2 = game.player.rect
+    collide = rect1.colliderect(rect2)
 
+    if collide:
+        game.sunny.reset_fall()
+
+        
+    if game.sunny.rect.y == screen_y:
+        game.sunny.reset_fall()
+
+
+
+game = Game1()
 
 rectScreen = screen.get_rect()
 running = True
-clock = pygame.time.Clock()
-while running:
 
+while running:
     police = pygame.font.Font(None, 72)
     texte = police.render("score : {}".format(str(score)), True, pygame.Color("#FFFF00"))
     rectTexte = texte.get_rect()
     rectTexte.center = rectScreen.center
-    screen.fill(colors['GREEN'])
+    screen.fill(colors['CYAN'])
+    screen.blit(texte, rectTexte)
     screen.blit(game.player.image, game.player.rect)
-    screen.blit(texte, rectTexte )
     screen.blit(game.comet.image, game.comet.rect)
+    screen.blit(game.sunny.image, game.sunny.rect)
 
     pygame.display.flip()
 
-
     for event in pygame.event.get():
         if game.comet.lose() or event.type == pygame.QUIT:
-
             running = False
 
     pressed = pygame.key.get_pressed()
     if pressed[pygame.K_LEFT] and game.player.rect.x > -75:
         game.player.move_left()
-    if pressed[pygame.K_RIGHT] and game.player.rect.x < 1080 - 190:
+    if pressed[pygame.K_RIGHT] and game.player.rect.x < screen_x - 190:
         game.player.move_right()
 
     if pressed[pygame.K_UP] and game.player.rect.y > 0:
         game.player.move_up()
 
-    if pressed[pygame.K_DOWN] and game.player.rect.y < 720 - 280:
+    if pressed[pygame.K_DOWN] and game.player.rect.y < screen_y - 280:
         game.player.move_down()
     game.comet.fall()
+    game.sunny.fall()
 
-    if game.comet.rect.y == 720:
+    if game.comet.rect.y == screen_y:
         break
 
-    check_collide()
-
+    check_bite_collide()
+    check_sunny_collide()
 
 pygame.quit()
