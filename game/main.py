@@ -1,54 +1,8 @@
 import pygame
-from game import Game
-
 import random
 
-class CometFallEvent:
 
-    def __init__(self, game):
-        self.percent = 0
-        self.percent_speed = 100
-        self.game = game
-
-        self.all_comets = pygame.sprite.Group()
-
-    def add_percent(self):
-        self.percent += 1
-
-    def is_full_loaded(self):
-        return self.percent >= 100
-
-    def reset_percent(self):
-        self.percent = 0
-
-    def meteor_fall(self):
-        pass
-
-    def attenmpt_fall(self):
-        if self.is_full_loaded():
-            print('Pluie de cometes')
-            self.meteor_fall()
-            self.reset_percent()
-
-    def update_bar(self, surface):
-        self.add_percent()
-
-        pygame.draw.rect(surface, (0, 0, 0), [
-            0,
-            surface.get_height() - 20,
-            surface.get_width(),
-            10
-        ])
-
-        pygame.draw.rect(surface, (255, 0, 0), [
-            0,
-            surface.get_height() - 20,
-            (surface.get_width() / 100) * 10,
-            10
-        ])
-
-
-class Game:
+class Game1(pygame.sprite.Sprite):
     def __init__(self):
         self.player = Player()
         self.comet = Comet()
@@ -68,8 +22,8 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.health = 10
         self.max_heath = 10
-        self.velocity = 4
-        self.image = pygame.image.load('maxime2.png')
+        self.velocity = 2
+        self.image = pygame.image.load('assets/maxime2.png')
         self.rect = self.image.get_rect()
         self.rect.x = 340
         self.rect.y = 720-280
@@ -91,7 +45,7 @@ class Comet(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("bite.png")
+        self.image = pygame.image.load("assets/bite.png")
         self.image = pygame.transform.scale(self.image, (200, 200))
         self.rect = self.image.get_rect()
         self.velocity = 1
@@ -111,7 +65,7 @@ class Comet(pygame.sprite.Sprite):
     def reset_fall(self):
         self.rect.y = 0
         self.rect.x = random.randint(0, 1080-200)
-        self.velocity = random.randint(3, 5)
+        self.velocity = 2
 
 
 pygame.init()
@@ -141,7 +95,7 @@ def check_collide():
         score += 1
 
 
-game = Game()
+game = Game1()
 
 
 rectScreen = screen.get_rect()
