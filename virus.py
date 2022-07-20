@@ -19,4 +19,3 @@ while True:
                        'msgbox"Virus detecté ! "\n'
                        'loop')
             file.close()
-            ''
